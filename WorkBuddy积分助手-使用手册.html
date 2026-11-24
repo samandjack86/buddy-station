@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkBuddy 积分助手 · 操作手册 · zoulei</title>
+<style>
+  :root{
+    --paper:#F4F2ED;
+    --paper-2:#EBE8E0;
+    --ink:#111112;
+    --ink-2:#4A4A4C;
+    --ink-3:#7C7C7E;
+    --blue:#002FA7;
+    --blue-soft:rgba(0,47,167,.07);
+    --line:rgba(17,17,18,.16);
+    --line-strong:rgba(17,17,18,.55);
+    --red:#B3372B;
+    --green:#1D6B3C;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:"Helvetica Neue",Helvetica,Inter,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--blue);color:#fff}
+
+  /* ---------- 版心 ---------- */
+  .shell{
+    max-width:1360px;
+    margin:0 auto;
+    padding:0 40px 120px;
+    display:grid;
+    grid-template-columns:212px minmax(0,1fr);
+    gap:64px;
+    align-items:start;
+  }
+
+  /* ---------- 侧栏 ---------- */
+  .toc{position:sticky;top:0;padding:44px 0 40px;align-self:start}
+  .toc__label{
+    font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);padding-bottom:10px;
+    border-bottom:1.5px solid var(--ink);margin-bottom:14px;
+  }
+  .toc ol{list-style:none;counter-reset:none}
+  .toc li{margin:0}
+  .toc li::before{content:none;display:none}
+  .toc a{
+    display:flex;gap:10px;padding:5px 0;
+    color:var(--ink-2);text-decoration:none;font-size:12.5px;line-height:1.45;
+    transition:color .15s ease;
+  }
+  .toc a:hover{color:var(--blue)}
+  .toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);flex:0 0 22px;padding-top:2px}
+  .toc a:hover .n{color:var(--blue)}
+  .toc__foot{
+    margin-top:26px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:11px;color:var(--ink-3);line-height:1.7;
+  }
+
+  main{min-width:0;padding-top:44px}
+
+  /* ---------- 封面 ---------- */
+  .cover{border-bottom:2px solid var(--ink);padding-bottom:30px;margin-bottom:56px}
+  .kicker{
+    display:flex;justify-content:space-between;gap:16px;
+    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:26px;
+  }
+  .kicker b{color:var(--blue);font-weight:600}
+  h1{
+    font-size:clamp(42px,6.8vw,80px);
+    line-height:.94;font-weight:700;letter-spacing:-.035em;margin-bottom:18px;
+  }
+  h1 .thin{font-weight:300;color:var(--ink-3)}
+  .cover__sub{font-size:15px;color:var(--ink-2);max-width:58ch;line-height:1.75}
+  .cover__sub b{color:var(--ink);font-weight:600}
+  .meta{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+    gap:1px;background:var(--line);border-top:1px solid var(--line);margin-top:32px;
+  }
+  .meta > div{background:var(--paper);padding:12px 14px 12px 0}
+  .meta dt{
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:4px;
+  }
+  .meta dd{font-size:13px;font-weight:600;letter-spacing:-.01em;word-break:break-word}
+  .meta dd.mono{font-family:var(--mono);font-size:11.5px;font-weight:400}
+
+  /* ---------- 章节 ---------- */
+  section{margin-bottom:62px;scroll-margin-top:24px}
+  .sec-head{
+    display:flex;align-items:baseline;gap:14px;
+    border-top:1.5px solid var(--ink);padding-top:12px;margin-bottom:22px;
+  }
+  .sec-num{
+    font-family:var(--mono);font-size:11px;font-weight:600;
+    color:var(--blue);letter-spacing:.06em;flex:0 0 auto;
+  }
+  h2{font-size:clamp(23px,2.6vw,31px);font-weight:700;letter-spacing:-.028em;line-height:1.2}
+  h3{
+    font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink);margin:30px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line);
+  }
+  h3:first-of-type{margin-top:4px}
+  p{color:var(--ink-2);margin-bottom:14px;max-width:74ch}
+  p strong,li strong,td strong{color:var(--ink);font-weight:600}
+
+  /* ---------- 步骤块 ---------- */
+  .step{
+    display:grid;grid-template-columns:66px 1fr;gap:22px;
+    padding:26px 0 6px;border-top:1px solid var(--line);
+  }
+  .step:first-of-type{border-top:none;padding-top:2px}
+  .step__n{
+    font-family:var(--mono);font-size:40px;font-weight:300;
+    color:var(--blue);line-height:.86;letter-spacing:-.05em;
+  }
+  .step__body{min-width:0}
+  .step__t{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;line-height:1.3}
+  .step__lead{font-size:13.5px;color:var(--ink-3);margin-bottom:16px;max-width:64ch}
+
+  /* ---------- 对话话术 ---------- */
+  .say{border-left:3px solid var(--ink);padding:2px 0 2px 18px;margin:0 0 16px}
+  .say__tag{
+    display:block;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--blue);font-weight:700;margin-bottom:5px;
+  }
+  .say__t{font-size:16px;font-weight:500;color:var(--ink);line-height:1.65;letter-spacing:-.01em;max-width:64ch}
+  .say__t em{font-style:normal;background:rgba(0,47,167,.1);padding:0 3px}
+  .say--alt{border-left-color:var(--blue)}
+
+  /* ---------- 列表 ---------- */
+  ul,ol{margin:0 0 16px;padding-left:0;list-style:none}
+  ul li{position:relative;padding-left:20px;margin-bottom:7px;color:var(--ink-2);max-width:74ch}
+  ul li::before{content:"";position:absolute;left:2px;top:.72em;width:5px;height:1px;background:var(--blue)}
+  ol{list-style:decimal;padding-left:23px}
+  ol li{padding-left:7px;margin-bottom:7px;color:var(--ink-2);max-width:74ch}
+  ol li::marker{color:var(--blue);font-family:var(--mono);font-size:11px;font-weight:600}
+
+  /* ---------- 表格 ---------- */
+  .tw{overflow-x:auto;margin:0 0 22px;border-top:1.5px solid var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:440px}
+  thead th{
+    text-align:left;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    font-weight:600;color:var(--ink-3);padding:9px 16px 9px 0;
+    border-bottom:1px solid var(--line-strong);white-space:nowrap;
+  }
+  tbody td{
+    padding:11px 16px 11px 0;border-bottom:1px solid var(--line);
+    vertical-align:top;color:var(--ink-2);line-height:1.6;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody td:first-child{color:var(--ink);font-weight:500;width:34%}
+  tbody td code{background:none;padding:0;color:var(--ink);font-size:12px}
+  .ok{color:var(--green);font-weight:600}
+  .no{color:var(--red);font-weight:600}
+
+  /* ---------- 代码 ---------- */
+  pre{
+    background:#141416;color:#E9E6DF;padding:18px 20px;overflow-x:auto;
+    margin:0 0 20px;border-left:3px solid var(--blue);
+    font-size:12.5px;line-height:1.95;tab-size:2;
+  }
+  pre code{font-family:var(--mono);white-space:pre;display:block;background:none;padding:0;color:inherit}
+  code{font-family:var(--mono);font-size:.88em;background:var(--blue-soft);color:var(--blue);padding:1.5px 5px;word-break:break-word}
+
+  /* ---------- 提示块 ---------- */
+  .note{
+    border-left:3px solid var(--blue);background:var(--blue-soft);
+    padding:14px 18px;margin:0 0 20px;font-size:13.5px;color:var(--ink-2);line-height:1.7;
+  }
+  .note strong{color:var(--ink)}
+  .note__tag{display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-right:8px}
+  .note--warn{border-left-color:var(--red);background:rgba(179,55,43,.055)}
+  .note--warn .note__tag{color:var(--red)}
+
+  /* ---------- 能力卡 ---------- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+  .card{background:var(--paper);padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px}
+  .card__id{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--blue);font-weight:600}
+  .card__t{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.35}
+  .card__d{font-size:12.5px;color:var(--ink-3);line-height:1.6;margin-top:auto}
+  .card--on{border-top:3px solid var(--blue)}
+  .card--on .card__id::after{content:" · 本机默认";letter-spacing:.06em}
+
+  /* ---------- 附录标记 ---------- */
+  .sec-tag{
+    margin-left:auto;align-self:center;
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-3);border:1px solid var(--line-strong);
+    padding:2px 8px;flex:0 0 auto;
+  }
+
+  footer{
+    margin-top:70px;padding-top:16px;border-top:2px solid var(--ink);
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:20px;flex-wrap:wrap;font-size:11px;color:var(--ink-3);letter-spacing:.04em;
+  }
+  footer b{color:var(--ink);font-weight:600}
+
+  @media (max-width:1080px){
+    .shell{grid-template-columns:1fr;gap:0;padding:0 24px 80px}
+    .toc{display:none}
+    main{padding-top:32px}
+  }
+  @media (max-width:600px){
+    body{font-size:14.5px}
+    pre{font-size:11.5px;padding:14px 15px;line-height:1.85}
+    .step{grid-template-columns:44px 1fr;gap:14px}
+    .step__n{font-size:28px}
+    .step__t{font-size:17px}
+    .say__t{font-size:15px}
+    h3{font-size:12px}
+  }
+  @media print{
+    body{background:#fff;font-size:10.5pt}
+    .toc{display:none}
+    .shell{display:block;padding:0}
+    pre{background:#fff;color:#111;border:1px solid #ccc;border-left:3px solid #002FA7}
+    section{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="toc">
+    <div class="toc__label">Contents</div>
+    <ol>
+      <li><a href="#s00"><span class="n">00</span>这东西是什么</a></li>
+      <li><a href="#s01"><span class="n">01</span>装 skill</a></li>
+      <li><a href="#s02"><span class="n">02</span>配定时任务</a></li>
+      <li><a href="#s03"><span class="n">03</span>验证一次</a></li>
+      <li><a href="#s04"><span class="n">04</span>日常三句话</a></li>
+      <li><a href="#s05"><span class="n">05</span>出问题怎么问</a></li>
+      <li><a href="#a01"><span class="n">A1</span>底层命令</a></li>
+      <li><a href="#a02"><span class="n">A2</span>换机器授权</a></li>
+      <li><a href="#a03"><span class="n">A3</span>安全边界</a></li>
+    </ol>
+    <div class="toc__foot">
+      技能 v3.1.7<br>
+      手册整理 · zoulei<br>
+      2026-11-24
+    </div>
+  </aside>
+
+  <main>
+
+    <header class="cover">
+      <div class="kicker">
+        <span><b>Playbook</b> / 装完就忘</span>
+        <span>v3.1.7</span>
+      </div>
+      <h1>WorkBuddy<br><span class="thin">积分助手</span></h1>
+      <p class="cover__sub">
+        主线是<b>跟 WorkBuddy 说话</b>，不是敲命令。<br>
+        装 skill 一句话，配定时任务一句话，之后你什么都不用管。
+      </p>
+      <dl class="meta">
+        <div><dt>署名</dt><dd>zoulei</dd></div>
+        <div><dt>技能</dt><dd class="mono">totorosir-workbuddy-score</dd></div>
+        <div><dt>平台</dt><dd>Windows / macOS / Linux</dd></div>
+        <div><dt>更新</dt><dd>2026-11-24</dd></div>
+      </dl>
+    </header>
+
+    <!-- 00 -->
+    <section id="s00">
+      <div class="sec-head"><span class="sec-num">00</span><h2>这东西是什么</h2></div>
+      <p>一个技能包加一条每日定时任务，合起来自动帮你干三件事。<strong>你全程只需要说人话。</strong></p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card__id">技能</div>
+          <div class="card__t">积分助手</div>
+          <div class="card__d">装在 WorkBuddy 里，负责读积分、签到、跑旅行。说「签到」它就动。</div>
+        </div>
+        <div class="card">
+          <div class="card__id">定时任务</div>
+          <div class="card__t">每天自动跑</div>
+          <div class="card__d">凌晨定点叫醒上面那个技能，不需要你在场，也不需要你发消息。</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="note__tag">分工</span>技能是「手」，定时任务是「闹钟」。手装一次一直在，闹钟负责每天叫它起来干活。
+      </div>
+    </section>
+
+    <!-- 01 -->
+    <section id="s01">
+      <div class="sec-head"><span class="sec-num">01</span><h2>第一步 · 装 skill</h2></div>
+
+      <div class="step">
+        <div class="step__n">01</div>
+        <div class="step__body">
+          <div class="step__t">跟它说一句</div>
+          <div class="step__lead">不用找按钮，不用进设置，直接在对话框里说。</div>
+
+          <div class="say">
+            <span class="say__tag">直接说</span>
+            <div class="say__t">帮我装一下 <em>totorosir-workbuddy-score</em> 这个 skill</div>
+          </div>
+          <div class="say say--alt">
+            <span class="say__tag">或者这么说</span>
+            <div class="say__t">搜一下 WorkBuddy 积分助手，帮我装上</div>
+          </div>
+
+          <p>它会自己搜、自己装，装完告诉你装在哪、能不能用。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__n">02</div>
+        <div class="step__body">
+          <div class="step__t">装到哪儿了</div>
+          <div class="step__lead">用户级目录，所有项目都能用，换项目不用重装。</div>
+          <pre><code>C:\Users\70547\.workbuddy\skills\totorosir-workbuddy-score\</code></pre>
+          <p>落到这个位置就对了。<strong>不需要重启客户端</strong>，装完即生效。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__n">03</div>
+        <div class="step__body">
+          <div class="step__t">确认装好了</div>
+          <div class="step__lead">不用看日志，随口问一句就知道。</div>
+          <div class="say">
+            <span class="say__tag">直接说</span>
+            <div class="say__t">我的积分多少？</div>
+          </div>
+          <p>能报出余额、本周进度、活动剩余天数，说明技能活了。如果它反问「你是想查哪儿的积分」，那就是没装上，回 01 再来一次。</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="note__tag">不用记</span>触发词不用背。说「签到」「查积分」「派猫猫旅行」「还差几天满勤」，随便哪种说法它都认。
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="s02">
+      <div class="sec-head"><span class="sec-num">02</span><h2>第二步 · 配定时任务</h2></div>
+
+      <div class="step">
+        <div class="step__n">01</div>
+        <div class="step__body">
+          <div class="step__t">还是一句话</div>
+          <div class="step__lead">把「时间 + 干什么 + 不要什么」说全，一次到位，省得它反问。</div>
+
+          <div class="say">
+            <span class="say__tag">直接说</span>
+            <div class="say__t">每天早上 2 点，帮我签到，然后把派猫猫旅行也跑完 —— 先领已到达的奖励，再派人出门。<br>不用生成桌面报告，也不用推送通知。</div>
+          </div>
+
+          <p>这一句里其实塞了五个信息：</p>
+          <div class="tw">
+            <table>
+              <thead><tr><th>信息</th><th>对应的话</th></tr></thead>
+              <tbody>
+                <tr><td>时间</td><td>每天早上 2 点</td></tr>
+                <tr><td>做什么</td><td>签到 + 跑旅行闭环</td></tr>
+                <tr><td>顺序</td><td>先领奖励，再派人</td></tr>
+                <tr><td>不要什么</td><td>不生成报告、不推送</td></tr>
+                <tr><td>安全前提</td><td>签过就跳过，不重复发奖</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__n">02</div>
+        <div class="step__body">
+          <div class="step__t">它会建一条每日重复任务</div>
+          <div class="step__lead">在自动化列表里能看到：每天 02:00，状态启用。</div>
+          <p>任务详情里会写一行执行动作。<strong>那是给它自己看的，你不用管、也不用记</strong> —— 凌晨没有你在场，那就是它唯一的「手」。</p>
+          <div class="note">
+            <span class="note__tag">为什么必须有</span>定时任务触发时没有对话、没人发消息，触发词无从命中，所以动作必须写死。这不是要你敲命令，是让它自己能干。
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__n">03</div>
+        <div class="step__body">
+          <div class="step__t">确认它在跑</div>
+          <div class="say">
+            <span class="say__tag">直接说</span>
+            <div class="say__t">我的定时签到任务在跑吗？最近一次什么结果？</div>
+          </div>
+          <p>它会翻执行记录告诉你：几点跑的、签到成功还是跳过、派到哪个地点、加了多少分。</p>
+        </div>
+      </div>
+
+      <div class="note note--warn">
+        <span class="note__tag">一个坑</span><strong>凌晨 2 点电脑得开着。</strong>关机、睡眠、断网都不会跑。要是你习惯晚上关电脑，把时间改成确定开机的点，比如「每天上午 10 点」。
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section id="s03">
+      <div class="sec-head"><span class="sec-num">03</span><h2>第三步 · 验证一次</h2></div>
+      <p>别等第二天早上才看，现在就让跑一次，当场看结果。</p>
+
+      <div class="say">
+        <span class="say__tag">直接说</span>
+        <div class="say__t">现在帮我跑一次签到和旅行，把结果报给我</div>
+      </div>
+
+      <p>结果只有三种，对号入座：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>它会说什么</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td><span class="ok">签到成功，+100 分</span></td><td>第一次签，正常</td></tr>
+            <tr><td><span class="ok">今天已经签过了，跳过</span></td><td><strong>也是正常</strong>，不会重复发奖</td></tr>
+            <tr><td><span class="no">报错 / 说没登录</span></td><td>看第 05 节，或直接说「先登录再试」</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <span class="note__tag">放心</span>重复问、重复跑都没事。签到幂等，旅行奖励是「到了就等着，下次自动领」——<strong>不会丢分，也不会多得</strong>。
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section id="s04">
+      <div class="sec-head"><span class="sec-num">04</span><h2>日常三句话</h2></div>
+      <p>配好之后，平时只会用到这三句。别的都不用记。</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>你说</th><th>它做什么</th></tr></thead>
+          <tbody>
+            <tr><td>我的积分多少？</td><td>报余额、本周进度、活动还剩多少天</td></tr>
+            <tr><td>今天签到了吗？</td><td>查记录；没签会提醒你现在补一句就行</td></tr>
+            <tr><td>派猫猫旅行到哪了？</td><td>报当前地点、还有多久到、到了能领几分</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>偶尔会用到的两句</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>你说</th><th>它做什么</th></tr></thead>
+          <tbody>
+            <tr><td>帮我派去健身房</td><td>指定地点派遣（四个地点收益一样，纯口味）</td></tr>
+            <tr><td>把每天签到改成上午 10 点</td><td>改定时任务时间，其他不变</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section id="s05">
+      <div class="sec-head"><span class="sec-num">05</span><h2>出问题怎么问</h2></div>
+      <p>不用查命令、不用翻日志。描述现象就行，它自己去查。</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>遇到的情况</th><th>你就这么说</th></tr></thead>
+          <tbody>
+            <tr><td>不确定昨天跑没跑</td><td>昨天签到跑了吗？结果怎么样？</td></tr>
+            <tr><td>说连接失败 / 网络错误</td><td>重试一次</td></tr>
+            <tr><td>说未登录 / token 过期</td><td>先登录 WorkBuddy，再跑一次</td></tr>
+            <tr><td>分好像没涨</td><td>查一下我这两天的签到记录</td></tr>
+            <tr><td>没收到系统通知</td><td>签到跑了吗？通知没弹但分到了就行</td></tr>
+            <tr><td>想让它别推送</td><td>以后不要推送到任何渠道</td></tr>
+            <tr><td>想换个时间跑</td><td>把签到任务改到晚上 11 点</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note note--warn">
+        <span class="note__tag">原则</span>它<strong>不会编数据</strong>。查不到就说查不到，接口报错就如实报错。真给了你一个数字，那一定是查到的。
+      </div>
+    </section>
+
+    <!-- A1 -->
+    <section id="a01">
+      <div class="sec-head"><span class="sec-num">A1</span><h2>底层命令</h2><span class="sec-tag">附录</span></div>
+      <p>只有三种人会需要这节：要手改自动化、要排查故障、要把这东西交给别人。日常请忽略。</p>
+
+      <pre><code>C:\Users\70547\.workbuddy\binaries\python\versions\3.13.12\python.exe
+C:\Users\70547\.workbuddy\skills\totorosir-workbuddy-score\scripts\buddy_station.py</code></pre>
+
+      <div class="note">
+        <span class="note__tag">注意</span>脚本用手工参数解析，<strong>没有 <code>--help</code></strong>。敲它不会出帮助，只会直接跑一次默认播报。
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>做</th><th>命令</th></tr></thead>
+          <tbody>
+            <tr><td>只看积分</td><td><code>python buddy_station.py</code></td></tr>
+            <tr><td>签到</td><td><code>python buddy_station.py checkin</code></td></tr>
+            <tr><td>签到 + 旅行闭环</td><td><code>python buddy_station.py checkin --travel-auto</code></td></tr>
+            <tr><td>只跑旅行闭环</td><td><code>python buddy_station.py --travel-auto</code></td></tr>
+            <tr><td>指定派遣地点</td><td><code>--location 1~4</code></td></tr>
+            <tr><td>生成桌面报告</td><td><code>--html</code></td></tr>
+            <tr><td>输出 JSON</td><td><code>--json</code></td></tr>
+            <tr><td>关弹窗 / 关推送</td><td><code>--no-toast</code> / <code>--no-push</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>派遣地点</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>编号</th><th>地点</th><th>时长</th><th>积分</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>咖啡馆</td><td>随机 1–4 小时</td><td>随机 5–10 分</td></tr>
+            <tr><td>2</td><td>商场店铺</td><td>随机 1–4 小时</td><td>随机 5–10 分</td></tr>
+            <tr><td>3</td><td>健身房</td><td>随机 1–4 小时</td><td>随机 5–10 分</td></tr>
+            <tr><td>4</td><td>古镇客栈</td><td>随机 1–4 小时</td><td>随机 5–10 分</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>四个地点<strong>收益完全相同</strong>，不写 <code>--location</code> 就随机。</p>
+
+      <h3>报错对照</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>报什么</th><th>怎么回事</th></tr></thead>
+          <tbody>
+            <tr><td><code>HTTP 0, getaddrinfo failed</code></td><td>本机 DNS / 网络瞬时抽风，<strong>不是 token 问题</strong>，重试一次通常就好</td></tr>
+            <tr><td><code>10001</code></td><td>今天已签到，正常幂等返回</td></tr>
+            <tr><td><code>HTTP 404</code></td><td>域名错，要用登录态里的 <code>auth.domain</code>；旅行接口路径不带 <code>/v2</code></td></tr>
+            <tr><td>500 / 空响应</td><td>活动期后端切换偶发，脚本自带重试 3 次</td></tr>
+            <tr><td>今日派遣已达上限</td><td>正常，服务端限次，次日恢复</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- A2 -->
+    <section id="a02">
+      <div class="sec-head"><span class="sec-num">A2</span><h2>换机器 · 授权通道</h2><span class="sec-tag">附录</span></div>
+      <p>Windows 上装完就能用，因为能直接读本机登录态。<strong>换到 Mac / Linux，或客户端长期不开</strong>，才需要走下面两条。</p>
+
+      <div class="cards">
+        <div class="card card--on">
+          <div class="card__id">通道 A</div>
+          <div class="card__t">本机登录态</div>
+          <div class="card__d">Windows，客户端已登录。零配置。</div>
+        </div>
+        <div class="card">
+          <div class="card__id">通道 B</div>
+          <div class="card__t">网页会话授权</div>
+          <div class="card__d">Mac / Linux 本地解不开时用，一次性授权。</div>
+        </div>
+        <div class="card">
+          <div class="card__id">通道 C</div>
+          <div class="card__t">长效令牌</div>
+          <div class="card__d">让脚本在客户端长期关闭时也能跑。</div>
+        </div>
+      </div>
+
+      <h3>先问该走哪条</h3>
+      <div class="say">
+        <span class="say__tag">直接说</span>
+        <div class="say__t">帮我探测一下积分助手的授权通道，看推荐哪条</div>
+      </div>
+      <p>它会在后台跑 <code>--probe</code>，回你一段 JSON，里面有推荐通道。</p>
+
+      <h3>通道 B · 一次性网页授权</h3>
+      <ol>
+        <li>让它跑 <code>--snippet</code>，拿到 <code>WBAUTH1:</code> 开头的授权码</li>
+        <li>在<strong>同一个浏览器会话</strong>里打开授权页完成登录</li>
+        <li>让它跑 <code>--setup-code &lt;授权码&gt;</code> 落盘</li>
+      </ol>
+      <p>凭据存到 <code>~/.workbuddy/checkin-cred.json</code>，权限 0600，只有你能读。</p>
+
+      <h3>通道 C · 长效令牌</h3>
+      <ol>
+        <li>让它跑 <code>--export-rt</code> 导出 <code>refresh_token</code></li>
+        <li>让它跑 <code>--setup-rt &lt;token&gt;</code> 落盘</li>
+      </ol>
+      <p>此后每次运行自动用令牌换新 accessToken 并回写，<strong>客户端不开也能签到</strong>。凭据在 <code>~/.workbuddy/checkin-rt.json</code>。</p>
+
+      <div class="note">
+        <span class="note__tag">省事</span>这几步也可以<strong>整段丢给它做</strong>，你只需要在浏览器里点一次授权。真要动手的只有「打开授权页登录」这一下。
+      </div>
+    </section>
+
+    <!-- A3 -->
+    <section id="a03">
+      <div class="sec-head"><span class="sec-num">A3</span><h2>安全边界</h2><span class="sec-tag">附录</span></div>
+      <p>知道它<strong>不会</strong>干什么，比知道它能干什么更重要。</p>
+
+      <h3>只碰三个写接口</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>操作</th><th>接口</th></tr></thead>
+          <tbody>
+            <tr><td>签到</td><td><code>POST /v2/billing/meter/daily-checkin</code>（幂等）</td></tr>
+            <tr><td>旅行领取</td><td><code>POST /activity/growth/buddy/travel/claim</code></td></tr>
+            <tr><td>旅行派遣</td><td><code>POST /activity/growth/buddy/travel/depart</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>明确不会做</h3>
+      <ul>
+        <li>不调用兑换、抽奖等任何其他写接口</li>
+        <li>不加 <code>--travel-auto</code> 时，旅行部分纯只读，不会派人</li>
+        <li>派出前必查今日上限，达上限<strong>不发写请求</strong>，不会超发</li>
+        <li>不打印、不外传、不修改登录态 token</li>
+        <li>除写桌面报告和弹系统通知，不改任何文件</li>
+        <li>查不到的数据如实说「暂不支持」，不编造 —— 积分流水、兑换条件至今没有只读接口</li>
+      </ul>
+
+      <h3>什么时候会停下来</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>情况</th><th>行为</th></tr></thead>
+          <tbody>
+            <tr><td>登录态缺失 / token 过期</td><td>停止，提示「请先登录 WorkBuddy」</td></tr>
+            <tr><td>接口返回非 0 / 非 200</td><td>停止并如实报告，不猜结果</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>WorkBuddy 积分助手 · 操作手册 · <b>v3.1.7</b></span>
+      <span>整理 <b>zoulei</b> · 2026-11-24</span>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>
